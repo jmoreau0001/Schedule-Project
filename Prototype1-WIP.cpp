@@ -332,8 +332,9 @@ int main()
 
 		//This creates variables for getting input
 		std::string plan;
-		int hour;
+		int hour, month, day, year, daynumber;
 		std::string minute;
+		
 
 		//This switch executes based on choice
 		switch(userVal)
@@ -341,6 +342,8 @@ int main()
 
 			//This case inserts values into the array
 			case 'A':
+				std::cout << "\nEnter date in mm dd yyyy format: ";
+				std::cin >> month >> day >> year;
 				std::cout << "\nEnter hour for date: ";
 				std::cin >> hour;
 				std::cout << "\nEnter minute for date: ";
