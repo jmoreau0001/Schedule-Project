@@ -1,0 +1,8 @@
+We can edit the file in github, so we should do all of our stuff in there
+and then compile once we think it looks good.
+
+When we make changes we should add a comment (at the bottom when you edit the cpp file) saying what 
+has been changed, namely new variables, functions, and stuff like that.
+
+If you have an algorithm idea then make a new file and write it in pseudocode, the same also goes for ideas
+about things that the program could/should do.
