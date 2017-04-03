@@ -47,7 +47,7 @@ class Schedule
 		//This will set the year
 		void setYear(int);
 		//This will set the weekday number
-		void setDayNumber(int, int, int);
+		int DayNumber(int, int, int);
 		//These will get the day, month, year, and day numbers
 		int getDay();
 		int getMonth();
@@ -128,7 +128,7 @@ void Schedule::setYear(int userYear)
 }
 
 //This sets the day number (weekday)
-void Schedule::setDayNumber(int userDay, int userMonth, int userYear)
+int Schedule::DayNumber(int userDay, int userMonth, int userYear)
 {
 	//This adjusts the month values
 	if (userMonth == 1 || userMonth == 2)
@@ -137,7 +137,8 @@ void Schedule::setDayNumber(int userDay, int userMonth, int userYear)
 		userYear = userYear -1;
 	}
 	//Calculates the day of the week using the Zeller Congruence Algorithm
-	return (userDay + (int)std::floor((13 * (userMonth + 1)) / 5) + (userYear % 100) + (int)std::floor((userYear % 100) / 4) + (int)std::floor(((int)std::floor(userYear / 100)) / 4) + 5 * (int)std::floor(userYear / 7)) % 7;
+	daynumber = (userDay + (int)std::floor((13 * (userMonth + 1)) / 5) + (userYear % 100) + (int)std::floor((userYear % 100) / 4) + (int)std::floor(((int)std::floor(userYear / 100)) / 4) + 5 * (int)std::floor(userYear / 7)) % 7;
+	return daynumber;
 }	
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -169,6 +170,13 @@ int Schedule::getHour()
 	return hour;
 }
 
+//This gets the daynumber
+int Schedule::getDayNumber()
+{
+	//Returns the daynumber
+	return daynumber;
+}
+
 //This will access the minute value
 std::string Schedule::getMinute()
 {
@@ -197,7 +205,7 @@ ScheduleArray::~ScheduleArray()
 }
 
 //This adds values to the array
-void ScheduleArray::insertSchedule(int hour, std::string minute, std::string plan)
+void ScheduleArray::insertSchedule(int hour, std::string minute, std::string plan, int daynumber)
 {
 	if (currentSchedules >= maxSchedules)
 	{
@@ -214,7 +222,7 @@ void ScheduleArray::insertSchedule(int hour, std::string minute, std::string pla
 		PTRarray = newArray;
 	}
 	//This adds schedules to an array
-	PTRarray[currentSchedules] = new Schedule(hour, minute, plan);
+	PTRarray[currentSchedules] = new Schedule(hour, minute, plan, daynumber);
 	//Increments number of schedules
 	currentSchedules++;
 }
@@ -344,6 +352,7 @@ int main()
 			case 'A':
 				std::cout << "\nEnter date in mm dd yyyy format: ";
 				std::cin >> month >> day >> year;
+				daynumber = arr.DayNumber(month, day, year);
 				std::cout << "\nEnter hour for date: ";
 				std::cin >> hour;
 				std::cout << "\nEnter minute for date: ";
@@ -352,7 +361,7 @@ int main()
 				std::cin.ignore(1000, '\n');	
 				std::getline(std::cin, plan);
 				//This inputs the circles
-				arr.insertSchedule(hour, minute, plan);
+				arr.insertSchedule(hour, minute, plan, daynumber);
 				break;
 
 			//This case displays the schedule
