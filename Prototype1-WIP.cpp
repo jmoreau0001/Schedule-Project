@@ -47,7 +47,7 @@ class Schedule
 		//This will set the year
 		void setYear(int);
 		//This will set the weekday number
-		int DayNumber(int, int, int);
+		void setDayNumber(int, int, int);
 		//These will get the day, month, year, and day numbers
 		int getDay();
 		int getMonth();
@@ -128,7 +128,7 @@ void Schedule::setYear(int userYear)
 }
 
 //This sets the day number (weekday)
-int Schedule::DayNumber(int userDay, int userMonth, int userYear)
+void Schedule::setDayNumber(int userDay, int userMonth, int userYear)
 {
 	//This adjusts the month values
 	if (userMonth == 1 || userMonth == 2)
@@ -138,7 +138,6 @@ int Schedule::DayNumber(int userDay, int userMonth, int userYear)
 	}
 	//Calculates the day of the week using the Zeller Congruence Algorithm
 	daynumber = (userDay + (int)std::floor((13 * (userMonth + 1)) / 5) + (userYear % 100) + (int)std::floor((userYear % 100) / 4) + (int)std::floor(((int)std::floor(userYear / 100)) / 4) + 5 * (int)std::floor(userYear / 7)) % 7;
-	return daynumber;
 }	
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -177,14 +176,33 @@ int Schedule::getDayNumber()
 	return daynumber;
 }
 
+//This gets the day
+int Schedule::getDay()
+{
+	//Returns the day value
+	return day;
+}
+
+//This gets the month
+int Schedule::getMonth()
+{
+	//Returns the month value
+	return month;
+}
+
+//This gets the year
+int Schedule::getYear()
+{
+	//Returns the year value
+	return year;
+}
+
 //This will access the minute value
 std::string Schedule::getMinute()
 {
 	//This accesses the set minute
 	return minute;
 }
-
-
 
 //This will create the dynamic array
 ScheduleArray::ScheduleArray()
@@ -205,7 +223,7 @@ ScheduleArray::~ScheduleArray()
 }
 
 //This adds values to the array
-void ScheduleArray::insertSchedule(int hour, std::string minute, std::string plan, int daynumber)
+void ScheduleArray::insertSchedule(int hour, std::string minute, std::string plan, int month, int day, int year)
 {
 	if (currentSchedules >= maxSchedules)
 	{
@@ -222,7 +240,7 @@ void ScheduleArray::insertSchedule(int hour, std::string minute, std::string pla
 		PTRarray = newArray;
 	}
 	//This adds schedules to an array
-	PTRarray[currentSchedules] = new Schedule(hour, minute, plan, daynumber);
+	PTRarray[currentSchedules] = new Schedule(hour, minute, plan, month, day, year);
 	//Increments number of schedules
 	currentSchedules++;
 }
@@ -234,17 +252,51 @@ void ScheduleArray::printSchedule(Schedule* schedule)
 	int hour = schedule -> getHour();
 	std::string minute = schedule -> getMinute();
 	std::string plan = schedule -> getPlan();
+	int month = schedule -> getMonth();
+	int day = schedule -> getDay();
+	int year = schedule -> getYear();
+	int daynumber = schedule -> getDayNumber();
+	
+	//Creates a weekday string value
+	std::string weekday;
+	
+	switch (daynumber)
+	{
+            case 2:
+		weekday = "Monday";
+                break;
+            case 3:
+		weekday = "Tuesday";
+                break;
+            case 4:
+		weekday = "Wednesday";
+                break;
+            case 5:
+		weekday = "Thursday";
+                break;
+            case 6:
+		weekday = "Friday";
+                break;
+            case 0:
+		weekday = "Saturday";
+                break;
+            case 1:
+		weekday = "Sunday";
+                break;
+        }
 
 	//This prints out the values if it is 10, 11, or 12
 	if (hour >= 10)
 	{
-		std::cout << std::setw(2) << std::left << hour << ":" <<
+		std::cout << weekday << " " << month << " " << day << " " << year << " " <<
+			std::setw(2) << std::left << hour << ":" <<
 			std::setw(11) << minute << plan << std::endl;
 	}
 	//This prints out the values if it isn't 10, 11, or 12
 	else
 	{
-		std::cout << hour << ":" << std::setw(12) << minute
+		std::cout << weekday << " " << month << " " << day << " " << year << " " <<
+			hour << ":" << std::setw(12) << minute
 			 << plan << std::endl;
 	}
 }
@@ -254,8 +306,6 @@ void ScheduleArray::displaySchedule()
 {
 	//This prints out a header for the data
 	std::cout << "\n\nSCHEDULE FOR THE DAY\n" << std::endl;
-	std::cout << std::setw(14) << std::left << "TIME"
-			<< "PLAN FOR TIME" << std::endl;
 
 	//This prints out the entire array
 	for (int i = 0; i < currentSchedules; i++)
@@ -265,12 +315,16 @@ void ScheduleArray::displaySchedule()
 }
 
 //This sets the values from the user
-Schedule::Schedule( int hour, std::string minute, std::string plan )
+Schedule::Schedule( int hour, std::string minute, std::string plan, int month, int day, int year)
 {
 	//This sets the various values
 	setHour(hour);
 	setMinute(minute);
 	setPlan(plan);
+	setMonth(month);
+	setDay(day);
+	setYear(year);
+	setDayNumber(day, month, year);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -352,7 +406,6 @@ int main()
 			case 'A':
 				std::cout << "\nEnter date in mm dd yyyy format: ";
 				std::cin >> month >> day >> year;
-				daynumber = arr.DayNumber(month, day, year);
 				std::cout << "\nEnter hour for date: ";
 				std::cin >> hour;
 				std::cout << "\nEnter minute for date: ";
@@ -360,8 +413,8 @@ int main()
 				std::cout << "\nEnter plan for that time: ";
 				std::cin.ignore(1000, '\n');	
 				std::getline(std::cin, plan);
-				//This inputs the circles
-				arr.insertSchedule(hour, minute, plan, daynumber);
+				//This inputs the schedule
+				arr.insertSchedule(hour, minute, plan, month, day, year);
 				break;
 
 			//This case displays the schedule
@@ -377,8 +430,7 @@ int main()
 			//This exits the program
 			case 'E':
 				std::cout << "\nProgram will now exit,"
-						<< " thank you for using"
-						<< " this program!"
+						<< " thanks for the support!"
 						<< std::endl;
 				break;
 		}
