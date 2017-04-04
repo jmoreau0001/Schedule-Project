@@ -27,7 +27,7 @@ class Schedule
 	public:
 
 		//This initializes all values
-		Schedule(int, int, int, int, int, std::string, std::string);
+		Schedule(int, std::string, std::string, int, int, int);
 		//This will set the hour from the user
 		void setHour(int);
 		//This will access the hour
@@ -76,7 +76,7 @@ class ScheduleArray
 		//This will destroy the array
 		~ScheduleArray();
 		//This adds a schedule
-		void insertSchedule(int, int, int, int, int, std::string, std::string);
+		void insertSchedule(int, std::string, std::string, int, int, int);
 		//This will display the schedules
 		void displaySchedule();
 		//This will print a single schedule
@@ -394,7 +394,7 @@ int main()
 
 		//This creates variables for getting input
 		std::string plan;
-		int hour, month, day, year, daynumber;
+		int hour, month, day, year;
 		std::string minute;
 		
 
